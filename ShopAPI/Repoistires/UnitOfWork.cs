@@ -1,14 +1,12 @@
-﻿using ShopAPI.Data;
+using ShopAPI.Data;
 using ShopAPI.Repoistires.Base;
 
 namespace ShopAPI.Repoistires
 {
     public class UnitOfWork : IUnitOfWork
     {
-        // Store repositories for each entity type to avoid creating them multiple times
         private readonly Dictionary<Type, object> _repositories = new();
 
-        // Inject DbContext
         private readonly AppDbContext _context;
         public UnitOfWork(AppDbContext context)
         {
@@ -16,27 +14,23 @@ namespace ShopAPI.Repoistires
         }
 
 
-
-        // Commit changes to the database
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }
 
 
-        // Repositories for different entities
-        public IMainRepoistory<T> GetRepository<T>() where T : class
+        public IMainRepository<T> GetRepository<T>() where T : class
         {
             var type = typeof(T);
 
-            // If repository for this entity doesn't exist, create and store it
             if (!_repositories.ContainsKey(type))
             {
-                var repoInstance = new MainRepoistory<T>(_context);
+                var repoInstance = new MainRepository<T>(_context);
                 _repositories[type] = repoInstance;
             }
 
-            return (IMainRepoistory<T>)_repositories[type];
+            return (IMainRepository<T>)_repositories[type];
         }
         public void Dispose()
         {

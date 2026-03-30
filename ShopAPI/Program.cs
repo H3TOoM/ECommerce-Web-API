@@ -15,16 +15,12 @@ const string AllowFrontendPolicy = "AllowFrontend";
 
 
 
-// Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-// Register Repoistory && Unit Of Work
-builder.Services.AddScoped(typeof(IMainRepoistory<>), typeof(MainRepoistory<>));
+builder.Services.AddScoped(typeof(IMainRepository<>), typeof(MainRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Register Services
 builder.Services.AddScoped<IProductService, ProductService>()
         .AddScoped<IOrderService, OrderService>()
         .AddScoped<ICategoryService, CategoryService>()

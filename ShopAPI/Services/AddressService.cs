@@ -12,32 +12,16 @@ namespace ShopAPI.Services
     /// </summary>
     public class AddressService : IAddressService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<Address> _mainRepository;
+        private readonly IMainRepository<Address> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the AddressService
-        /// </summary>
-        /// <param name="mainRepository">Repository for address data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public AddressService(IMainRepoistory<Address> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public AddressService(IMainRepository<Address> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        #endregion
-
-        #region CRUD Operations
 
         /// <summary>
         /// Creates a new address for a user
@@ -52,7 +36,7 @@ namespace ShopAPI.Services
             if (dto.IsNullEntity())
                 throw new ArgumentNullException(nameof(dto));
 
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
             // Map DTO to entity and set user ID
@@ -83,7 +67,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid or address not found</exception>
         public async Task<AddressViewDto> GetAddressByIdAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var address = await _mainRepository.GetByIdAsync(id);
@@ -103,7 +87,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentNullException">Thrown when DTO is null</exception>
         public async Task<AddressViewDto> UpdateAddressAsync(int userId, AddressUpdateDto dto)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
 
@@ -135,7 +119,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid</exception>
         public async Task<bool> DeleteAddressAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var address = await _mainRepository.GetByIdAsync(id);
@@ -160,7 +144,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when user ID is invalid</exception>
         public async Task<IEnumerable<AddressViewDto>> GetAddressesByUserIdAsync(int userId)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
             // Filter addresses by user ID

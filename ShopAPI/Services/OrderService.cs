@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ShopAPI.DTOs;
 using ShopAPI.Helpers;
 using ShopAPI.Models;
@@ -12,32 +12,16 @@ namespace ShopAPI.Services
     /// </summary>
     public class OrderService : IOrderService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<Order> _mainRepository;
+        private readonly IMainRepository<Order> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the OrderService
-        /// </summary>
-        /// <param name="mainRepository">Repository for order data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public OrderService(IMainRepoistory<Order> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public OrderService(IMainRepository<Order> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        #endregion
-
-        #region CRUD Operations
 
         /// <summary>
         /// Creates a new order
@@ -78,7 +62,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid or order not found</exception>
         public async Task<OrderViewDto> GetOrderByIdAsync(int orderId)
         {
-            if (orderId.IsInValidId())
+            if (orderId.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var order = await _mainRepository.GetByIdAsync(orderId);
@@ -98,7 +82,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentNullException">Thrown when DTO is null</exception>
         public async Task<OrderViewDto> UpdateOrderAsync(int id, OrderUpdateDto dto)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var order = await _mainRepository.GetByIdAsync(id);
@@ -127,7 +111,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid</exception>
         public async Task<bool> DeleteOrderAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var order = await _mainRepository.GetByIdAsync(id);

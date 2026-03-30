@@ -12,23 +12,11 @@ namespace ShopAPI.Services
     /// </summary>
     public class CartService : ICartService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<Cart> _mainRepository;
+        private readonly IMainRepository<Cart> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the CartService
-        /// </summary>
-        /// <param name="mainRepository">Repository for cart data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public CartService(IMainRepoistory<Cart> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public CartService(IMainRepository<Cart> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
@@ -47,7 +35,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when user ID is invalid</exception>
         public async Task<CartItemViewDto> CreateCart(int userId)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
             // Create new cart with empty items list
@@ -72,7 +60,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when user ID is invalid or cart not found</exception>
         public async Task<CartItemViewDto> GetCartByUserIdAsync(int userId)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
             // Find cart by user ID
@@ -96,7 +84,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentNullException">Thrown when DTO is null</exception>
         public async Task<CartItemViewDto> UpdateCart(int userId, CartItemUpdateDto cartItemDto)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
 
@@ -131,7 +119,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when user ID is invalid</exception>
         public async Task<bool> ClearCart(int userId)
         {
-            if (userId.IsInValidId())
+            if (userId.IsInvalidId())
                 throw new ArgumentException("Invalid User ID!");
 
             // Find cart by user ID

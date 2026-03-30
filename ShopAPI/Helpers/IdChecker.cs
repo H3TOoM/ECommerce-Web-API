@@ -1,12 +1,10 @@
-﻿namespace ShopAPI.Helpers
+namespace ShopAPI.Helpers
 {
     public static class IdChecker
     {
-        public static bool IsInValidId(this int id)
+        public static bool IsInvalidId(this int id)
         {
-            if (id <= 0)
-                return true;
-            return false;
+            return id <= 0;
         }
     }
 }

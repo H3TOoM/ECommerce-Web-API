@@ -12,23 +12,11 @@ namespace ShopAPI.Services
     /// </summary>
     public class CartItemService : ICartItemService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<CartItem> _mainRepository;
+        private readonly IMainRepository<CartItem> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the CartItemService
-        /// </summary>
-        /// <param name="mainRepository">Repository for cart item data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public CartItemService(IMainRepoistory<CartItem> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public CartItemService(IMainRepository<CartItem> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
@@ -50,7 +38,7 @@ namespace ShopAPI.Services
         public async Task<CartItemViewDto> CreateCartItemAsync(int cartId, CartItemCreateDto dto)
         {
 
-            if (cartId.IsInValidId())
+            if (cartId.IsInvalidId())
                 throw new ArgumentException("Invalid Cart ID!");
 
             // Map DTO to entity and set cart ID
@@ -71,7 +59,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when cart ID is invalid</exception>
         public async Task<IEnumerable<CartItemViewDto>> GetAllCartItemsAsync(int cartId)
         {
-            if (cartId.IsInValidId())
+            if (cartId.IsInvalidId())
                 throw new ArgumentException("Invalid Cart ID!");
 
             // Filter cart items by cart ID
@@ -91,7 +79,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid or cart item not found</exception>
         public async Task<CartItemViewDto> GetCartItemByIdAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var cartItem = await _mainRepository.GetByIdAsync(id);
@@ -111,7 +99,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentNullException">Thrown when DTO is null</exception>
         public async Task<CartItemViewDto> UpdateCartItemAsync(int id, CartItemUpdateDto dto)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             if (dto.IsNullEntity())
@@ -139,7 +127,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid</exception>
         public async Task<bool> DeleteCartItemAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var cartItem = await _mainRepository.GetByIdAsync(id);

@@ -12,32 +12,16 @@ namespace ShopAPI.Services
     /// </summary>
     public class UserService : IUserService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<User> _mainRepository;
+        private readonly IMainRepository<User> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the UserService
-        /// </summary>
-        /// <param name="mainRepository">Repository for user data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public UserService(IMainRepoistory<User> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public UserService(IMainRepository<User> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        #endregion
-
-        #region CRUD Operations
 
         /// <summary>
         /// Creates a new user
@@ -80,7 +64,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid or user not found</exception>
         public async Task<UserViewDto> GetUserByIdAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var user = await _mainRepository.GetByIdAsync(id);
@@ -101,7 +85,7 @@ namespace ShopAPI.Services
         /// <remarks>Password should be hashed in production environment</remarks>
         public async Task<UserViewDto> UpdateUserAsync(int id, UserUpdateDto dto)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
 
@@ -130,7 +114,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid</exception>
         public async Task<bool> DeleteUserAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var user = await _mainRepository.GetByIdAsync(id);

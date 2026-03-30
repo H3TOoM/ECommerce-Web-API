@@ -12,32 +12,16 @@ namespace ShopAPI.Services
     /// </summary>
     public class CategoryService : ICategoryService
     {
-        #region Dependencies
-
-        private readonly IMainRepoistory<Category> _mainRepository;
+        private readonly IMainRepository<Category> _mainRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the CategoryService
-        /// </summary>
-        /// <param name="mainRepository">Repository for category data access</param>
-        /// <param name="unitOfWork">Unit of work for transaction management</param>
-        /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public CategoryService(IMainRepoistory<Category> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public CategoryService(IMainRepository<Category> mainRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mainRepository = mainRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        #endregion
-
-        #region CRUD Operations
 
         /// <summary>
         /// Creates a new category
@@ -76,7 +60,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid or category not found</exception>
         public async Task<CategoryViewDto> GetCategoryByIdAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var category = await _mainRepository.GetByIdAsync(id);
@@ -96,7 +80,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentNullException">Thrown when DTO is null</exception>
         public async Task<CategoryViewDto> UpdateCategoryAsync(int id, CategoryUpdateDto dto)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var category = await _mainRepository.GetByIdAsync(id);
@@ -119,7 +103,7 @@ namespace ShopAPI.Services
         /// <exception cref="ArgumentException">Thrown when ID is invalid</exception>
         public async Task<bool> DeleteCategoryAsync(int id)
         {
-            if (id.IsInValidId())
+            if (id.IsInvalidId())
                 throw new ArgumentException("Invalid ID!");
 
             var category = await _mainRepository.GetByIdAsync(id);
