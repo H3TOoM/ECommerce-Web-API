@@ -5,6 +5,7 @@ using ShopAPI.Models;
 using ShopAPI.Repoistires.Base;
 using ShopAPI.Repoistires.Specifications;
 using ShopAPI.Services.Base;
+using static ShopAPI.Repoistires.Specifications.ProductSpecification;
 
 namespace ShopAPI.Services
 {

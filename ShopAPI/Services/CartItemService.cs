@@ -23,8 +23,6 @@ namespace ShopAPI.Services
             _mapper = mapper;
         }
 
-        #endregion
-
         #region CRUD Operations
 
         /// <summary>

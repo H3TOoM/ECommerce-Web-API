@@ -61,8 +61,8 @@ namespace ShopAPI.Data
                 .HasDatabaseName("IX_Order_UserId");
 
             modelBuilder.Entity<Order>()
-                .HasIndex(o => new { o.UserId, o.CreatedDate })
-                .HasDatabaseName("IX_Order_UserId_CreatedDate");
+                .HasIndex(o => new { o.UserId, o.OrderDate })
+                .HasDatabaseName("IX_Order_UserId_OrderDate");
 
             // OrderItem indexes
             modelBuilder.Entity<OrderItem>()
@@ -101,7 +101,7 @@ namespace ShopAPI.Data
                 .HasColumnType("decimal(10,2)");
 
             modelBuilder.Entity<OrderItem>()
-                .Property(oi => oi.Price)
+                .Property(oi => oi.TotalPrice)
                 .HasColumnType("decimal(10,2)");
 
             modelBuilder.Entity<Order>()

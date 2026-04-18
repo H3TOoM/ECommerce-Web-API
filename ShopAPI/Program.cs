@@ -2,6 +2,7 @@ using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
@@ -52,7 +53,7 @@ builder.Services
     .AddScoped<ITokenService, TokenService>();
 
 // Register AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
 // Register FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<ProductCreateDtoValidator>();

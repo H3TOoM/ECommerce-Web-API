@@ -15,5 +15,12 @@ namespace ShopAPI.Models
         public int Quantity { get; set; }
         [Range(0.01, double.MaxValue)]
         public decimal UnitPrice { get; set; }
+
+        public decimal TotalPrice { get; private set; }
+
+        private void CalculateTotalPrice()
+        {
+            TotalPrice = Quantity * UnitPrice;
+        }
     }
 }

@@ -116,7 +116,6 @@ namespace ShopAPI.Services
             return true;
         }
 
-        #endregion
     }
 }
 

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ShopAPI.Models;
 using ShopAPI.Repoistires.Base;
 
@@ -55,8 +56,8 @@ namespace ShopAPI.Repoistires.Specifications
         /// <summary>
         /// Get products with complex filtering
         /// </summary>
-        public static ProductSpecification FilterAdvanced(decimal? minPrice = null, decimal? maxPrice = null, 
-            int? categoryId = null, string? searchTerm = null, string? sortBy = "name", string? sortOrder = "asc", 
+        public static ProductSpecification FilterAdvanced(decimal? minPrice = null, decimal? maxPrice = null,
+            int? categoryId = null, string? searchTerm = null, string? sortBy = "name", string? sortOrder = "asc",
             int pageNumber = 1, int pageSize = 10)
         {
             var spec = new ProductSpecification();
@@ -83,16 +84,7 @@ namespace ShopAPI.Repoistires.Specifications
             if (sortBy != null)
             {
                 var isAscending = sortOrder?.ToLower() != "desc";
-                switch (sortBy.ToLower())
-                {
-                    case "price":
-                        spec.AddOrderBy(nameof(Product.Price), isAscending);
-                        break;
-                    case "name":
-                    default:
-                        spec.AddOrderBy(nameof(Product.Name), isAscending);
-                        break;
-                }
+                ProductSpecificationExtensions.AddOrderBy(spec, sortBy, isAscending);
             }
 
             // Apply pagination
@@ -102,36 +94,71 @@ namespace ShopAPI.Repoistires.Specifications
 
             return spec;
         }
+
+        /// <summary>
+        /// Specification for user queries
+        /// </summary>
+        public class UserSpecification : Specification<User>
+        {
+            /// <summary>
+            /// Get all users
+            /// </summary>
+            public static UserSpecification GetAll() => new();
+
+            /// <summary>
+            /// Get user by email (for login and duplicate checks)
+            /// </summary>
+            public static UserSpecification GetByEmail(string email)
+            {
+                var spec = new UserSpecification();
+                spec.FilterExpression = q => q.Where(u => u.Email == email);
+                return spec;
+            }
+
+            /// <summary>
+            /// Get user by username
+            /// </summary>
+            public static UserSpecification GetByUsername(string username)
+            {
+                var spec = new UserSpecification();
+                spec.FilterExpression = q => q.Where(u => u.Username == username);
+                return spec;
+            }
+        }
     }
 
-    /// <summary>
-    /// Specification for user queries
-    /// </summary>
-    public class UserSpecification : Specification<User>
+    // Extension method must be in a non-generic static class
+    public static class ProductSpecificationExtensions
     {
-        /// <summary>
-        /// Get all users
-        /// </summary>
-        public static UserSpecification GetAll() => new();
-
-        /// <summary>
-        /// Get user by email (for login and duplicate checks)
-        /// </summary>
-        public static UserSpecification GetByEmail(string email)
+        public static void AddOrderBy(this Specification<Product> spec, string propertyName, bool isAscending)
         {
-            var spec = new UserSpecification();
-            spec.FilterExpression = q => q.Where(u => u.Email == email);
-            return spec;
-        }
+            if (spec == null)
+                throw new ArgumentNullException(nameof(spec));
 
-        /// <summary>
-        /// Get user by username
-        /// </summary>
-        public static UserSpecification GetByUsername(string username)
-        {
-            var spec = new UserSpecification();
-            spec.FilterExpression = q => q.Where(u => u.Username == username);
-            return spec;
+            if (string.IsNullOrWhiteSpace(propertyName))
+                return;
+
+            // Preserve any existing filter/transform function
+            var existing = spec.FilterExpression;
+
+            spec.FilterExpression = q =>
+            {
+                // Apply existing filter/transform if present
+                var baseQuery = existing != null ? existing(q) : q;
+
+                try
+                {
+                    // Use EF.Property to allow dynamic property access that EF Core can translate
+                    return isAscending
+                        ? baseQuery.OrderBy(p => EF.Property<object>(p, propertyName))
+                        : baseQuery.OrderByDescending(p => EF.Property<object>(p, propertyName));
+                }
+                catch
+                {
+                    // If the property doesn't exist or ordering fails, fall back to the unmodified query.
+                    return baseQuery;
+                }
+            };
         }
     }
 }

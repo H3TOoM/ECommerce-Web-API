@@ -14,5 +14,15 @@ namespace ShopAPI.Models
 
         [Required, MaxLength(50)]
         public string Role { get; set; }
+
+        // Navigation properties
+        public ICollection<Order> Orders { get; set; }
+
+
+        public int CartId { get; set; }
+        public Cart Cart { get; set; }
+
+
+        public ICollection<Address> Addresses { get; set; }
     }
 }

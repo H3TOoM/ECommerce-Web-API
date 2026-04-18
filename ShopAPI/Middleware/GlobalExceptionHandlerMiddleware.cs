@@ -44,7 +44,7 @@ namespace ShopAPI.Middleware
                 
                 // Handle argument exceptions
                 ArgumentException => CreateErrorResponse(context, 400, exception.Message),
-                ArgumentNullException => CreateErrorResponse(context, 400, "Required field is null"),
+                NullReferenceException => CreateErrorResponse(context, 400, "Required field is null"),
                 
                 // Handle unauthorized exceptions
                 UnauthorizedAccessException => CreateErrorResponse(context, 401, "Unauthorized access"),
